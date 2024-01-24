@@ -39,6 +39,21 @@ Python is case sensitive, so `a` and `A` are two different variables.
 
 You don't need a type so just doing `x = 1` will create the `x` variable and set it's value to `1`. You can then reassign a value to it or just delete it (free up the memory) with `del x`.
 
+You can declare variables individually
+```python
+x = 1
+y = 2.5
+name = 'John'
+is_true = True
+```
+Or use a destructuring like syntax (as in JS) and assign all values in one line, the following code is equivalent to the one above:
+```python
+x, y, name, is_true = (1, 2.5, 'John', True)
+```
+> [!IMPORTANT]
+> Python has some built-in functions, like len(data) which returns the length of the data structure that you passed as parameter. A common error is to use the `len` word as a variable and store something in there, don't. There are reserved words like `while` and `if` that throw errors, but built-in functions/variables don't act like that, so you would just be overwriting whatever values were there.
+
+
 ### Code checking
 Python does very little checking at compile time, deferring almost all type, name, etc. checks on each line until that line runs (runtime).
 ```python
