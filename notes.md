@@ -300,3 +300,16 @@ False
 >>> id(string2)
 139699879691376
 ```
+
+## Files
+Open a file with the `open(filename)` function. This function returns a file handler to which you should call `handler.close()` after you finished using it.
+
+You can use the `with` keyword to avoid closing a file.
+```python
+with open(filename, mode) as f: # mode = {'r' | 'w' | 'a' | 'rt'}
+	# do file stuff here...
+	for line in f:
+		# do something with each line. Only works for text files, no binary files
+```
+
+The `open()` functions as some options like the `mode` in which it is opened. You can read ('r'), write ('w'), append ('a') or you can read and write ('r+').
