@@ -23,6 +23,12 @@ def greet(name):
 	print('Hello there', name)
 ```
 
+#### Lambda Functions
+Like arrow functions in JS. Small one time use anonymous functions:
+```python
+lambda param1, param2: param1 + param2
+```
+
 ### Command Line
 You run python files with the `python3` command. If you need to pass parameters then use the `sys` module's `argv` property with `argv[0]` being the program itself, `sys.argv[1]` the first argument, and so on.
 ```python
@@ -230,3 +236,45 @@ You access an item with the `[]` syntax: `ages['john]`. If you want the keys/val
 The `range(n)` function yields the numbers `0, 1, ... n-1`, and `range(a, b)` returns `a, a+1, ... b-1` up to but not including the last number.
 
 This sequence returned is not a list, but of type `range`.
+
+## Operators
+Only python specific ones will be here, check [the docs](https://docs.python.org/3/reference/lexical_analysis.html#operators) to see all operators.
+
+### Logical operators:
+* `and`: like `&&` in C
+* `or`: like `||` in C
+* `not`: like `~` in C
+
+### Membership operators:
+* `in`: checks whether a value is in a collection. E.g. `1 in [1,2,3,4]` which returns `True`
+
+### Identity operators
+* `is`: checks whether the identity is the same, when the variables on either side points at the exact same object returns true. (so pointer comparison more than value comparison).
+
+Check this example:
+```python
+>>> string1 = 'hello'
+>>> string2 = 'hello'
+>>> id(string1)
+139699879691376
+>>> id(string2)
+139699879691376
+>>> string1 == string2
+True
+>>> string1 is string2
+True
+>>> string1 = string1.replace('h', 'm')
+>>> string1 = string1.replace('m', 'h')
+>>> string1
+'hello'
+>>> string2
+'hello'
+>>> string1 == string2
+True
+>>> string1 is string2
+False
+>>> id(string1)
+139699879691568
+>>> id(string2)
+139699879691376
+```
