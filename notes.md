@@ -232,6 +232,28 @@ You can create a dict like:
 
 You access an item with the `[]` syntax: `ages['john]`. If you want the keys/values only, use the `.keys()` or `.items()` respectively (returns a list).
 
+> [!NOTE]
+> `dict[non_existent_key]` throws an error. If you want to avoid that use the `dict.key(non_existent_key)` which returns None if value is not present.
+
+#### String % operator with dicts
+The % operator works conveniently to substitute values from a dict into a string by name:
+```python
+h = { count: 42, word: 'garfield' }
+s = 'I want %(count)d copies of %(word)s' % h  # %d for int, %s for string
+# 'I want 42 copies of garfield'
+```
+
+### Del
+`del` is a keyword for deleting variables or values in some data structure.
+
+Referring to a variable that was deleted with `del` will throw an error. It is as if the variable was never created.
+
+Some examples on how to use it:
+* `del dict['key']` which deletes that specific key.
+* `del dict` which deletes the entire dictionary.
+* `del list[2:]` which deletes the all elements from index 2 to the end.
+
+
 ## The range() function
 The `range(n)` function yields the numbers `0, 1, ... n-1`, and `range(a, b)` returns `a, a+1, ... b-1` up to but not including the last number.
 
