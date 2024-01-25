@@ -21,7 +21,23 @@ word2 count2
 Print the above list in order sorted by word (python will sort punctuation to
 come before letters -- that's fine). Store all the words as lowercase,
 so 'The' and 'the' count as the same word.
+"""
 
+def print_words(filename):
+  d = {}
+  with open(filename, 'r') as f:
+    for line in f:
+      words = line.split()
+      for word in words:
+        lower_word = word.lower()
+        if lower_word not in d: d[lower_word] = 1
+        else: d[lower_word] = d[lower_word] + 1
+  
+  keys = sorted(d.keys())
+  for k in keys:
+    print(f'WORD: {k:10} COUNT: {d[k]}')
+
+"""
 2. For the --topcount flag, implement a print_top(filename) which is similar
 to print_words() but which prints just the top 20 most common words sorted
 so the most common word is first, then the next most common, and so on.
@@ -36,6 +52,25 @@ Optional: define a helper function to avoid code duplication inside
 print_words() and print_top().
 
 """
+
+def print_top(filename):
+  d = {}
+  with open(filename, 'r') as f:
+    for line in f:
+      words = line.split()
+      for word in words:
+        lower_word = word.lower()
+        if lower_word not in d: d[lower_word] = 1
+        else: d[lower_word] = d[lower_word] + 1
+  
+  items = reversed(sorted(d.items(), key=lambda t: t[1]))
+  j = 0
+  for i in items:
+    print(f'WORD: {i[0]:10} COUNT: {i[1]}')
+    j += 1
+    if j > 20: break
+
+
 
 import sys
 
