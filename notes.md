@@ -313,3 +313,41 @@ with open(filename, mode) as f: # mode = {'r' | 'w' | 'a' | 'rt'}
 ```
 
 The `open()` functions as some options like the `mode` in which it is opened. You can read ('r'), write ('w'), append ('a') or you can read and write ('r+').
+
+## Classes
+The concept is the same as in every other language. You declare a class with the `class` keyword.
+
+Constructor is defined as `__init__` function. This function takes in a param `self` (obviously name it however you want) that is the object itself. Use that `self` value to refer to an instance specific property (like `this` in JS).
+
+This types of functions are called dunder functions (double underscore).
+
+Example:
+```python
+class User:
+	def __init__(self, param1, param2):
+		self.name = param1
+		self.lastName = param2
+	
+	# Just a method
+	def greet(self):
+		print(f'Hello {self.name}')
+
+# Instance an object of that class
+u = User('John', 'Doe')
+print(u.name) # 'John'
+print(u.greet()) # Hello John
+```
+
+### Inheritance
+There is no keyword for this, you `call` your class with the parent class as a parameter.
+
+Example:
+```python
+class Admin(User):
+	def greet(self):
+		print('I am and admin and this overwrites the greet method in user!')
+
+a = Admin('admin', 'last name')
+print(a.name) # 'admin'
+a.greet() # 'I am and admin and this overwrites the greet method in user!'
+```
