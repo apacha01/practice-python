@@ -134,9 +134,19 @@ print(t == ustring) # True
 
 ## Data Structures
 
+### Slices
+Slices are objects usually containing a part of a sequence that's created with the `[]` notation. Works for any sequence just like in strings.
+
+E.g. for a list `l = [1,2,3,4,5]`:
+* `l[:]` returns `[1,2,3,4,5]`
+* `l[1:]` returns `[2,3,4,5]`
+* `l[2:4]` returns `[3,4]`
+* `l[-1]` returns `5`
+
 ### Lists
 A list is a sequence:
-* Is zero-based indexed
+* Zero-based indexed
+* Ordered (items are in the list in the order they are inserted, doesn't mean sorted)
 * Changeable or Mutable
 * It allows duplicate items
 
@@ -172,14 +182,49 @@ The `+` works to append two lists, so `[1, 2] + [3, 4]` yields `[1, 2, 3, 4]`. T
 [1,4,8,2,9,1]
 ```
 
-#### Slices
-Works just like in strings. For a list `l = [1,2,3,4,5]`:
-* `l[:]` returns `[1,2,3,4,5]`
-* `l[1:]` returns `[2,3,4,5]`
-* `l[2:4]` returns `[3,4]`
-* `l[-1]` returns `5`
+### Tuples
+A tuple is a sequence:
+* Zero-based indexed
+* Ordered (items are in the tuple in the order they are inserted, doesn't mean sorted)
+* Immutable
+* It allows duplicate items
 
+You can create a tuple like:
+* Separating items with comma: `t = 1,2,3,4,5`
+* `()`: `t2 = (1,2,3,4,5)`
+* `tuple()`: `t3 = tuple((1,2,3,4,5))`
 
+> [!NOTE]
+> If you want to make a one item tuple the use a trailing coma, otherwise python will just take it as an expression in between parenthesis:
+> `t = (1,)`
+> If there is syntactic ambiguity, then the parenthesis cannot be omitted. E.g. a function `hi(names: tuple[str])` calling `hi('John','Mary','Some Name')` is interpreted as multiple parameters instead of a tuple, in which case parenthesis should be used.
+
+### Sets
+A set is a collection:
+* There is no index
+* Unordered (items are not in the set in the order they are inserted)
+* Mutable
+* It doesn't allows duplicate items
+
+You can create a set like:
+* `{}`: `s = {1,2,3,4}`
+* `set()`: `s2 = set((1,2,3,4,5))`
+* Set comprehension: `{c for c in 'abracadabra' if c not in 'abc'}`
+
+> [!NOTE]
+> For empty sets `{}` doesn't work (it creates an empty [dict](#dicts)) so use `set()`.
+
+### Dicts
+A dictionary is a collection with `key:value` pairs:
+* Indexed by keys (so strings, not integers)
+* Unordered (items are not in the dict in the order they are inserted)
+* Mutable
+* It doesn't allows duplicate items
+
+You can create a dict like:
+* `{}`: `ages = {'john': 45, 'doe': 20}`
+
+You access an item with the `[]` syntax: `ages['john]`. If you want the keys/values only, use the `.keys()` or `.items()` respectively (returns a list).
 
 ## The range() function
 The `range(n)` function yields the numbers `0, 1, ... n-1`, and `range(a, b)` returns `a, a+1, ... b-1` up to but not including the last number.
