@@ -130,3 +130,58 @@ print(b) # outputs -> b'A unicode \xc6\x8e string \xc3\xb1'
 t = b.decode('utf-8')
 print(t == ustring) # True
 ```
+
+
+## Data Structures
+
+### Lists
+A list is a sequence:
+* Is zero-based indexed
+* Changeable or Mutable
+* It allows duplicate items
+
+From python docs:
+>  it is more akin to an array in other languages than to a linked list since access to elements is O(1).
+
+You can create a list like:
+* `[]`: `l = [1,2,3,4,5]`
+* `list()`: `l2 = list((1,2,3,4,5))`
+* List comprehension: `l3 = [n * n for n in some_iterable]`
+
+Python docs on list comprehension:
+> A compact way to process all or part of the elements in a sequence and return a list with the results.
+
+Assignment with an `=` on lists does not make a copy. Instead, assignment makes the two variables point to the one list in memory.
+
+The `+` works to append two lists, so `[1, 2] + [3, 4]` yields `[1, 2, 3, 4]`. This is a new list, regardless whether the second expression is empty or not so:
+```python
+>>> l = [1,4,8,2,9]
+>>> l2 = l
+>>> l.append(1)
+>>> l
+[1,4,8,2,9,1]
+>>> l2
+[1,4,8,2,9,1]
+>>> l3 = l2 + []
+>>> l2.append(99)
+>>> l
+[1,4,8,2,9,1,99]
+>>> l2
+[1,4,8,2,9,1,99]
+>>> l3
+[1,4,8,2,9,1]
+```
+
+#### Slices
+Works just like in strings. For a list `l = [1,2,3,4,5]`:
+* `l[:]` returns `[1,2,3,4,5]`
+* `l[1:]` returns `[2,3,4,5]`
+* `l[2:4]` returns `[3,4]`
+* `l[-1]` returns `5`
+
+
+
+## The range() function
+The `range(n)` function yields the numbers `0, 1, ... n-1`, and `range(a, b)` returns `a, a+1, ... b-1` up to but not including the last number.
+
+This sequence returned is not a list, but of type `range`.
