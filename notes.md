@@ -361,12 +361,42 @@ I'll be referencing numpy with `np`.
 ## Arrays
 NumPy has their own array called `ndarray`, which is not a class (so you can't check for instances of that with `isinstance(x,np.array)`, it gives a `TypeError`)
 
-* Create an array with `arr = np.array(<data>)`. You could specify the data type with an additional param called `dtype`, e.g. default for integers is `int32`.
+* Create an array with `arr = np.array(<data>)`. You could specify the data type with an additional param called `dtype`, e.g. default for integers is `int32` (check all data types [here](https://wesmckinney.com/book/numpy-basics#tbl-table_array_dtypes)).
 * Create empty array with `np.empty((2,2))` with the tuple passed being the dimensions (doesn't have to be 2d). This doesn't even initialized the values so you'll get garbage. You can use `np.zeros((2,2))` to do the same but initialize all values to 0, or `np.ones()` to initialize all values with ones.
 * Create array following a sequence with `np.arrange(n[, m, steps])` with `n` being the data that goes from 0 to n-1 or from `n` to `m` if `m` is specified. `steps` is just the amount `n` is increased by in each iteration until it gets to `m`.
 * Create an array with `n` items with `np.linspace(n, m, items)`. This creates an array with `items` items in between `n` and `m`.
 * Check dimensions with `arr.shape # (2,2)` (gives columns size first).
 * Check total amount of data with `arr.size # 4 (following dimensions example)`.
+
+### Arithmetic Operations
+Any arithmetic operations between equal-size arrays apply the operation element-wise:
+```python
+arr = np.array([[1., 2., 3.], [4., 5., 6.]])
+
+arr * arr
+# array([[ 1.,  4.,  9.],
+#        [16., 25., 36.]])
+
+arr - arr
+# array([[0., 0., 0.],
+#        [0., 0., 0.]])
+```
+
+Arithmetic operations with scalars propagate the scalar argument to each element in the array:
+```python
+1 / arr
+# array([[1.    , 0.5   , 0.3333],
+#        [0.25  , 0.2   , 0.1667]])
+```
+
+Comparisons between arrays of the same size yield Boolean arrays:
+```python
+arr2 = np.array([[0., 4., 1.], [7., 2., 12.]])
+
+arr2 > arr
+# array([[False,  True, False],
+#        [ True, False,  True]])
+```
 
 ### Some methods
 From all `ndarrays`, you have:
@@ -398,25 +428,88 @@ arr.max(axis = 1) # rows, takes the min of every row
 
 ### Selection
 
-You can create arrays of booleans if you apply a condition to the `ndarray`. Then you use this to filter and get the values you want:
-```python
-arr = np.array([
-	[6,  8,  11,  8],
-	[13, 14,  0,  0],
-	[5,  10,  1,  2],
-	[18, 16, 14,  2]
-])
+The slices and indexing that applies to python sequences and strings is used here, so use `[]`.
 
-arr>12
+#### Basic Indexing
+
+For 2d arrays you use the basic `[]` syntax. You can use `arr[0][2]` or `arr[0,2]` to select the third column in the first row:
+```python
+arr2d = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+
+arr2d[0][2]
+# 3
+
+arr2d[0, 2]
+# 3
+```
+
+In multidimensional arrays, if you omit later indices, the returned object will be a lower dimensional ndarray consisting of all the data along the higher dimensions.
+```python
+arr2d = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+
+arr2d[0]
+# [1, 2, 3]
+```
+
+You can select a set of values of a `ndarray` with the booleans arrays seen in the [arithmetic operations section](#arithmetic-operations) of the arrays:
+```python
+arr>12 # returns the boolean matrix
 # [
 # 	[False,  False,  False,  False],
-# 	[True, True,  False,  False],
+# 	[True,    True,  False,  False],
 # 	[False,  False,  False,  False],
-# 	[True, True, True,  False]
+# 	[True,    True,  True,   False]
 # ]
 
 arr[arr>12] # You do lose the shape
 # [13, 14, 18, 16, 14]
+```
+
+> [!IMPORTANT]
+> The Python keywords `and` and `or` do not work with Boolean arrays. Use `&` (and) and `|` (or) instead.
+
+#### Fancy Indexing
+
+To select a subset of the rows in a particular order, you can simply pass a list or ndarray of integers specifying the desired order:
+```python
+arr = np.array([[0., 0., 0., 0.],
+       [1., 1., 1., 1.],
+       [2., 2., 2., 2.],
+       [3., 3., 3., 3.],
+       [4., 4., 4., 4.],
+       [5., 5., 5., 5.],
+       [6., 6., 6., 6.],
+       [7., 7., 7., 7.]])
+
+arr[[4, 3, 0, 6]]
+# array([[4., 4., 4., 4.],
+#        [3., 3., 3., 3.],
+#        [0., 0., 0., 0.],
+#        [6., 6., 6., 6.]])
+
+# Using negative indices selects rows from the end:
+arr[[-3, -5, -7]]
+# array([[5., 5., 5., 5.],
+#        [3., 3., 3., 3.],
+#        [1., 1., 1., 1.]])
+
+```
+
+Passing multiple index arrays selects a one-dimensional array of elements corresponding to each tuple of indices:
+```python
+arr = np.array([
+	[ 0,  1,  2,  3],
+    [ 4,  5,  6,  7],
+    [ 8,  9, 10, 11],
+    [12, 13, 14, 15],
+    [16, 17, 18, 19],
+    [20, 21, 22, 23],
+    [24, 25, 26, 27],
+    [28, 29, 30, 31]]
+)
+
+arr[[1, 5, 7, 2], [0, 3, 1, 2]] # so, tuple (1,0) -> arr[1,0] -> 4
+# array([ 4, 23, 29, 10])
 ```
 
 ## Math functions
@@ -457,3 +550,7 @@ You can have a normal data as well with `rg.normal(media, std_deviation, n)` wit
 # Pandas
 
 Basic stuff here, check [full book](https://wesmckinney.com/book/) from pandas creator.
+
+## Data Structures
+
+The primary objects in pandas are the DataFrame, a tabular, column-oriented data structure with both row and column labels. And the Series, a one-dimensional labeled array object.
