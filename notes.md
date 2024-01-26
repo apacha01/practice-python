@@ -533,6 +533,9 @@ print("\nMatrix A raised to power 3:\n", np.linalg.matrix_power(A, 3))
 #  [406 162 469]
 #  [698 702 905]]
 ```
+
+[List of common linalg's module functions](https://wesmckinney.com/book/numpy-basics#tbl-table_numpy_linalg) from McKinney book. 
+
 ## Randomness
 A way to produce random numbers is using `np.random.default_rng(seed)` which you can pass a `seed` to and returns an object to which you can ask random numbers (`seed` is important for reproducibility).
 ```python
@@ -546,6 +549,73 @@ If you only want integers the use `rg.integers(n [, m][, size])` with `n` being 
 
 You can have a normal data as well with `rg.normal(media, std_deviation, n)` with `n` being the amount of data wanted (also follows the `seed` passed when creating rg).
 
+[Here is a list](https://wesmckinney.com/book/numpy-basics#tbl-table_numpy_random) of all random generators, including `rg.normal` and `rg.integers`.
+
+## Universal Functions
+
+A universal function, or ufunc, is a function that performs element-wise operations on data in ndarrays.
+
+There are unary ufuncs:
+```python
+arr = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+np.sqrt(arr)
+# array([0., 1., 1.4142, 1.7321, 2., 2.2361, 2.4495, 2.6458, 2.8284, 3.])
+```
+
+And ufuncs that take two arrays (binary ufuncs):
+```python
+x = rng.standard_normal(8)
+y = rng.standard_normal(8)
+
+np.maximum(x, y)
+# array([-0.467 ,  0.6489,  0.7888, -1.2567,  2.3474,  1.399 ,  1.3223,
+#        0.9022])
+```
+
+[List of some unary ufuncs](https://wesmckinney.com/book/numpy-basics#tbl-table_unary_ufuncs) from McKinney book.
+
+[List of some binary ufuncs](https://wesmckinney.com/book/numpy-basics#tbl-table_binary_ufuncs) from McKinney book.
+
+## Sorting
+The python `.sort()` method which sorts in place can be used, but numpy includes a `np.sort()` that returns a sorted copy of an array. With this method you can also specify an axis to sort by:
+```python
+arr = np.array([[ 0.936 ,  1.2385,  1.2728],
+       [ 0.4059, -0.0503,  0.2893],
+       [ 0.1793,  1.3975,  0.292 ],
+       [ 0.6384, -0.0279,  1.3711],
+       [-2.0528,  0.3805,  0.7554]])
+
+# arr.sort(axis=0)    # in place
+np.sort(arr, axis=0)  # returns another array
+# array([[-2.0528, -0.0503,  0.2893],
+#        [ 0.1793, -0.0279,  0.292 ],
+#        [ 0.4059,  0.3805,  0.7554],
+#        [ 0.6384,  1.2385,  1.2728],
+#        [ 0.936 ,  1.3975,  1.3711]])
+
+# arr.sort(axis=1)    # in place
+np.sort(arr, axis=1)  # returns another array
+# array([[-2.0528, -0.0503,  0.2893],
+#        [-0.0279,  0.1793,  0.292 ],
+#        [ 0.3805,  0.4059,  0.7554],
+#        [ 0.6384,  1.2385,  1.2728],
+#        [ 0.936 ,  1.3711,  1.3975]])
+```
+
+## Unique And Other Set Logic
+
+You can get an array of unique values with `np.unique(array)`, which not only returns unique values it sorts them as well.
+
+Another function, numpy.in1d, tests membership of the values in one array in another, returning a Boolean array:
+```python
+values = np.array([6, 0, 0, 3, 2, 5, 6])
+
+np.in1d(values, [2, 3, 6])
+# array([ True, False, False,  True,  True, False,  True])
+```
+
+[List of set operations](https://wesmckinney.com/book/numpy-basics#tbl-table_setops) from McKinney book.
 
 # Pandas
 
