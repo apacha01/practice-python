@@ -351,3 +351,109 @@ a = Admin('admin', 'last name')
 print(a.name) # 'admin'
 a.greet() # 'I am and admin and this overwrites the greet method in user!'
 ```
+
+# NumPy
+
+Short for Numerical Python, a library for Python.
+
+I'll be referencing numpy with `np`.
+
+## Arrays
+NumPy has their own array called `ndarray`, which is not a class (so you can't check for instances of that with `isinstance(x,np.array)`, it gives a `TypeError`)
+
+* Create an array with `arr = np.array(<data>)`. You could specify the data type with an additional param called `dtype`, e.g. default for integers is `int32`.
+* Create empty array with `np.empty((2,2))` with the tuple passed being the dimensions (doesn't have to be 2d). This doesn't even initialized the values so you'll get garbage. You can use `np.zeros((2,2))` to do the same but initialize all values to 0, or `np.ones()` to initialize all values with ones.
+* Create array following a sequence with `np.arrange(n[, m, steps])` with `n` being the data that goes from 0 to n-1 or from `n` to `m` if `m` is specified. `steps` is just the amount `n` is increased by in each iteration until it gets to `m`.
+* Create an array with `n` items with `np.linspace(n, m, items)`. This creates an array with `items` items in between `n` and `m`.
+* Check dimensions with `arr.shape # (2,2)` (gives columns size first).
+* Check total amount of data with `arr.size # 4 (following dimensions example)`.
+
+### Some methods
+From all `ndarrays`, you have:
+* `arr.min()` for minimum
+* `arr.max()` for maximum
+* `arr.mean()` for the median
+* `arr.std()` for the standard deviation
+* `arr.sum()` adds up all values in the array
+
+and such
+
+When working with 2d arrays (matrices) things like min function or max will work across the columns or files depending on the axis specified:
+```python
+import numpy as np
+
+arr = np.array([
+	[6,  8,  11,  8]
+	[13, 14,  0,  0],
+	[5,  10,  1,  2],
+	[18, 16, 14,  2],
+])
+
+arr.min(axis = 0) # columns, takes the min of every column
+# [5, 8, 0, 0]
+
+arr.max(axis = 1) # rows, takes the min of every row
+# [11, 14, 10, 18]
+```
+
+### Selection
+
+You can create arrays of booleans if you apply a condition to the `ndarray`. Then you use this to filter and get the values you want:
+```python
+arr = np.array([
+	[6,  8,  11,  8],
+	[13, 14,  0,  0],
+	[5,  10,  1,  2],
+	[18, 16, 14,  2]
+])
+
+arr>12
+# [
+# 	[False,  False,  False,  False],
+# 	[True, True,  False,  False],
+# 	[False,  False,  False,  False],
+# 	[True, True, True,  False]
+# ]
+
+arr[arr>12] # You do lose the shape
+# [13, 14, 18, 16, 14]
+```
+
+## Math functions
+
+You have the typical trigonometric functions:
+* `np.sin()`
+* `np.cos()`
+...
+
+There's also a submodule for linear algebra which is `linalg` and you can use it like this:
+```python
+import numpy as np
+
+A = np.array([[6, 1, 1],
+              [4, -2, 5],
+              [2, 8, 7]])
+
+print("\nMatrix A raised to power 3:\n", np.linalg.matrix_power(A, 3))
+# Matrix A raised to power 3:
+#  [[336 162 228]
+#  [406 162 469]
+#  [698 702 905]]
+```
+## Randomness
+A way to produce random numbers is using `np.random.default_rng(seed)` which you can pass a `seed` to and returns an object to which you can ask random numbers (`seed` is important for reproducibility).
+```python
+rg = np.random.default_rng(17)
+
+print(rg.random(1)) # 1 is the amount of random numbers to get
+# array([0.29924217]) - i made this up
+```
+
+If you only want integers the use `rg.integers(n [, m][, size])` with `n` being the data that goes from 0 to n-1 or from `n` to `m` if `m` is specified. `size` is the amount of items you'll get, always in between 0 and n-1 or `n` and `m`.
+
+You can have a normal data as well with `rg.normal(media, std_deviation, n)` with `n` being the amount of data wanted (also follows the `seed` passed when creating rg).
+
+
+# Pandas
+
+Basic stuff here, check [full book](https://wesmckinney.com/book/) from pandas creator.
