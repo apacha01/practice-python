@@ -198,3 +198,23 @@ frame2.T
 Besides dictionary of dictionaries you can have other data types in the DataFame constructor, check full list [here](https://wesmckinney.com/book/pandas-basics#tbl-table_dataframe_constructor)
 
 Lastly, you can get a DataFrame information as a NumPy 2d array with `.to_numpy()` method.
+
+### Index Objects
+
+Pandas’s Index objects are responsible for holding the axis labels and other metadata. Any array or other sequence of labels you use when constructing a Series or DataFrame is internally converted to an Index. Index objects are immutable and thus can’t be modified by the user:
+```python
+obj = pd.Series(np.arrange(3), index=["a", "b", "c"])
+
+index = obj.index
+
+index
+Index(['a', 'b', 'c'], dtype='object')
+
+index[1] = 'd' # TypeError
+```
+
+You can create and index object with `pd.Index(np.arrange(5))`.
+
+In addition to being array-like, an Index also behaves like a fixed-size set, although *it can* contain duplicate labels.
+
+Check some [index methods here](https://wesmckinney.com/book/pandas-basics#tbl-table_index_methods).
