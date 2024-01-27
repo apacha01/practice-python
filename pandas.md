@@ -171,7 +171,10 @@ frame
 #### Deleting
 The `del` keyword can be used to delete columns: `del frame['non_existent_column']`.
 
-For rows, you should use the `df.drop()` method with it's index: `frame.drop(index=['a', 'b'])`.
+For rows, you should use the `df.drop()` method with it's index: `frame.drop(index=['a', 'b'])`. The drop method also works for columns with `frame.drop(columns=['pop'])`.
+
+> [!NOTE]
+> You can also drop by specifying the axis parameter (as with NumPy): `frame.drop(list, axis=1)` with 1 for columns and 0 for rows.
 
 #### Nested Dictionaries
 Another common form of data is a nested dictionary of dictionaries. If a nested dictionary used to construct a  DataFrame, pandas will interpret the outer dictionary keys as the columns, and the inner keys as the row indices (not true if you specify your own indexes):
@@ -203,7 +206,7 @@ Lastly, you can get a DataFrame information as a NumPy 2d array with `.to_numpy(
 
 Pandas’s Index objects are responsible for holding the axis labels and other metadata. Any array or other sequence of labels you use when constructing a Series or DataFrame is internally converted to an Index. Index objects are immutable and thus can’t be modified by the user:
 ```python
-obj = pd.Series(np.arrange(3), index=["a", "b", "c"])
+obj = pd.Series(np.arange(3), index=["a", "b", "c"])
 
 index = obj.index
 
@@ -213,8 +216,62 @@ Index(['a', 'b', 'c'], dtype='object')
 index[1] = 'd' # TypeError
 ```
 
-You can create and index object with `pd.Index(np.arrange(5))`.
+You can create and index object with `pd.Index(np.arange(5))`.
 
 In addition to being array-like, an Index also behaves like a fixed-size set, although *it can* contain duplicate labels.
 
 Check some [index methods here](https://wesmckinney.com/book/pandas-basics#tbl-table_index_methods).
+
+## Essential Functionality
+As the book says
+> This book is not intended to serve as exhaustive documentation for the pandas library; instead, we'll focus on familiarizing you with heavily used features...
+
+So, this is just a briefing of that, to come back to for review.
+
+### Reindexing
+
+`reindex` is a method in pandas objects, which means to create a new object with the values rearanged to align with the new index.
+```python
+obj = pd.Series([4.5, 7.2, -5.3, 3.6], index=["d", "b", "a", "c"])
+obj
+# d    4.5
+# b    7.2
+# a   -5.3
+# c    3.6
+# dtype: float64
+
+obj.reindex(["a", "b", "c", "d", "e"])
+# a   -5.3
+# b    7.2
+# c    3.6
+# d    4.5
+# e    NaN
+# dtype: float64
+```
+
+For ordered data, you can do interpolation or filling of values when reindexing. The method option is for that, using a method such as `ffill`, which forward-fills the values:
+```python
+obj = pd.Series(["blue", "purple", "yellow"], index=[0, 2, 4])
+# 0      blue
+# 2    purple
+# 4    yellow
+# dtype: object
+
+obj.reindex(np.arange(6), method="ffill")
+# 0      blue
+# 1      blue
+# 2    purple
+# 3    purple
+# 4    yellow
+# 5    yellow
+# dtype: object
+```
+
+With DataFrames, you can specify whether to reindex rows or columns (rows is the default). For that use the column parameter: `frame.reindex(columns=['column1','column2'])`. However, when reindexing by columns, if a column didn't exist, it will be created with all missing values and if a column, that does exist, is not included in the list, it will be dropped.
+
+> [!NOTES]
+> You can also just use the `reindex` function with the axis parameter: `frame.reindex(index_list, axis="columns")`.
+
+[Here](https://wesmckinney.com/book/pandas-basics#tbl-table_reindex_function) are all the `reindex` function arguments.
+
+### Indexing, Selection and Filtering
