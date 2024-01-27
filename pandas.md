@@ -10,6 +10,9 @@
 	- [Essential Functionality](#essential-functionality)
 		- [Reindexing](#reindexing)
 		- [Indexing, Selection and Filtering](#indexing-selection-and-filtering)
+			- [Series](#series-1)
+			- [DataFrames](#dataframes-1)
+		- [Arithmetic and Data Alignment](#arithmetic-and-data-alignment)
 
 
 # Pandas
@@ -288,3 +291,159 @@ With DataFrames, you can specify whether to reindex rows or columns (rows is the
 [Here](https://wesmckinney.com/book/pandas-basics#tbl-table_reindex_function) are all the `reindex` function arguments.
 
 ### Indexing, Selection and Filtering
+
+#### Series
+While you can select data by label with the `[]` syntax, the preferred way to select index values is with the special `loc` operator: `frame.loc[['col1','col2']]`. The reason to prefer loc is because of the different treatment of integers when indexing with `[]`. Regular `[]`-based indexing will treat integers as labels if the index contains integers. E.g:
+```python
+obj1 = pd.Series([1, 2, 3], index=[2, 0, 1])
+obj2 = pd.Series([1, 2, 3], index=['a', 'b', 'c'])
+
+obj1
+# 2    1
+# 0    2
+# 1    3
+# dtype: int64
+
+obj2
+# a    1
+# b    2
+# c    3
+# dtype: int64
+
+obj1[[0,1]] # index lookup
+# 0    2
+# 1    3
+# dtype: int64
+
+obj2[[0,1]] # rows order lookup
+# a    1
+# b    2
+# dtype: int64
+
+obj1[-1] # Throws error (pandas doesn't know whether to do label-based indexing or position-based)
+```
+
+Something like `loc[[0,1]]` fails if the index is not of the data passed to it (integer in this case). Since loc operator indexes exclusively with labels, there is also an `iloc` operator that indexes exclusively with integers to work consistently whether or not the index contains integers.
+
+There's also slicing with `loc` by doing `obj2.loc["b":"c"]`.
+
+> [!IMPORTANT]
+> If you use `loc` to slice do note that it's not the same as Python, because `loc` does include the endpoint. Following the previous example, this would be the result:
+> ```python
+> obj2.loc["b":"c"]
+> # b    2
+> # c    3
+> # dtype: int64
+> ```
+
+To filter a Series object you can use the Boolean array method seen in [this section](./numpy.md#basic-indexing):
+```python
+obj1[obj1>2]
+# 1    3
+# dtype: int64
+```
+
+#### DataFrames
+
+Indexing into a DataFrame with `[]` retrieves one or more columns either with a single value or sequence. Indexing like this has a few special cases, like slicing or selecting data with a Boolean array (as seen in the [Basic Indexing](./numpy.md#basic-indexing) section in `numpy.md`).
+```python
+# data =
+#           one  two  three  four
+# Ohio        0    1      2     3
+# Colorado    4    5      6     7
+# Utah        8    9     10    11
+# New York   12   13     14    15
+
+data["two"]
+# Ohio         1
+# Colorado     5
+# Utah         9
+# New York    13
+# Name: two, dtype: int64
+
+# Special case: Slicing to select rows
+data[:2]
+#           one  two  three  four
+# Ohio        0    1      2     3
+# Colorado    4    5      6     7
+
+# Special case: Boolean Arrays
+data[data["three"] > 5]
+# 		   one  two  three  four
+# Colorado    4    5      6     7
+# Utah        8    9     10    11
+# New York   12   13     14    15
+```
+
+You can also use `loc` and `iloc` as with Series. Since DataFrame is two-dimensional, you can select a subset of the rows and columns with NumPy-like notation using either axis labels (loc) or integers (iloc).
+```python
+# loc
+data.loc["Colorado"]
+# one      4
+# two      5
+# three    6
+# four     7
+# Name: Colorado, dtype: int32
+
+data.loc[['Colorado', 'New York']]
+# 			one	two	three	four
+# Colorado	4	5	6		7
+# New York	12	13	14		15
+
+data.loc["Colorado", ["two", "three"]]
+# two      5
+# three    6
+# Name: Colorado, dtype: int32
+
+# iloc
+data.iloc[2]
+# one       8
+# two       9
+# three    10
+# four     11
+# Name: Utah, dtype: int32
+
+data.iloc[-1]
+# one      12
+# two      13
+# three    14
+# four     15
+# Name: New York, dtype: int32
+
+data.iloc[2, [3, 0, 1]]
+# four    11
+# one      8
+# two      9
+# Name: Utah, dtype: int32
+```
+
+Both methods work with slices as well:
+```python
+data.loc[:"Utah", "two"]
+# Ohio        1
+# Colorado    5
+# Utah        9
+# Name: two, dtype: int32
+
+data.iloc[:, :3]
+# 			one	two	three
+# Ohio		0	1	2
+# Colorado	4	5	6
+# Utah		8	9	10
+# New York	12	13	14
+```
+> [!NOTE]
+> Boolean arrays can be used with `loc` but not `iloc`.
+
+[Here is a list](https://wesmckinney.com/book/pandas-basics#tbl-table_dataframe_loc_iloc) of the indexing options in a DataFrame from McKinney book.
+
+You can filter with the `loc` method and Boolean Arrays:
+```python
+data.loc[data["four"] > 5]
+# 			one	two	three	four
+# Colorado	4	5	6		7
+# Utah		8	9	10		11
+# New York	12	13	14		15
+```
+
+### Arithmetic and Data Alignment
