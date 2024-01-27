@@ -230,7 +230,7 @@ So, this is just a briefing of that, to come back to for review.
 
 ### Reindexing
 
-`reindex` is a method in pandas objects, which means to create a new object with the values rearanged to align with the new index.
+`reindex` is a method in pandas objects, which creates a new object with the values rearranged to align with the new index.
 ```python
 obj = pd.Series([4.5, 7.2, -5.3, 3.6], index=["d", "b", "a", "c"])
 obj
