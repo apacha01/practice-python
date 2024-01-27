@@ -9,7 +9,7 @@ NumPy has their own array called `ndarray`, which is not a class (so you can't c
 
 * Create an array with `arr = np.array(<data>)`. You could specify the data type with an additional param called `dtype`, e.g. default for integers is `int32` (check all data types [here](https://wesmckinney.com/book/numpy-basics#tbl-table_array_dtypes)).
 * Create empty array with `np.empty((2,2))` with the tuple passed being the dimensions (doesn't have to be 2d). This doesn't even initialized the values so you'll get garbage. You can use `np.zeros((2,2))` to do the same but initialize all values to 0, or `np.ones()` to initialize all values with ones.
-* Create array following a sequence with `np.arrange(n[, m, steps])` with `n` being the data that goes from 0 to n-1 or from `n` to `m` if `m` is specified. `steps` is just the amount `n` is increased by in each iteration until it gets to `m`.
+* Create array following a sequence with `np.arange(n[, m, steps])` with `n` being the data that goes from 0 to n-1 or from `n` to `m` if `m` is specified. `steps` is just the amount `n` is increased by in each iteration until it gets to `m`.
 * Create an array with `n` items with `np.linspace(n, m, items)`. This creates an array with `items` items in between `n` and `m`.
 * Check dimensions with `arr.shape # (2,2)` (gives columns size first).
 * Check total amount of data with `arr.size # 4 (following dimensions example)`.
