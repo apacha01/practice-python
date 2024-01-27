@@ -269,7 +269,7 @@ obj.reindex(np.arange(6), method="ffill")
 
 With DataFrames, you can specify whether to reindex rows or columns (rows is the default). For that use the column parameter: `frame.reindex(columns=['column1','column2'])`. However, when reindexing by columns, if a column didn't exist, it will be created with all missing values and if a column, that does exist, is not included in the list, it will be dropped.
 
-> [!NOTES]
+> [!NOTE]
 > You can also just use the `reindex` function with the axis parameter: `frame.reindex(index_list, axis="columns")`.
 
 [Here](https://wesmckinney.com/book/pandas-basics#tbl-table_reindex_function) are all the `reindex` function arguments.
