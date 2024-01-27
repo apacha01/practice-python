@@ -1,3 +1,17 @@
+- [Pandas](#pandas)
+	- [Data Structures](#data-structures)
+		- [Series](#series)
+		- [DataFrames](#dataframes)
+			- [Selection](#selection)
+			- [Inserting values](#inserting-values)
+			- [Deleting](#deleting)
+			- [Nested Dictionaries](#nested-dictionaries)
+		- [Index Objects](#index-objects)
+	- [Essential Functionality](#essential-functionality)
+		- [Reindexing](#reindexing)
+		- [Indexing, Selection and Filtering](#indexing-selection-and-filtering)
+
+
 # Pandas
 
 An open source library for manipulating data with python. I'll be referring to pandas as `pd`.
@@ -153,20 +167,19 @@ Columns can be modified by assignment. You can use:
 
 > [!IMPORTANT]
 > If you assign a Series, its indexes will be realigned exactly to the DataFrame’s index, inserting missing values in any index values not present:
-
-```python
-val = pd.Series([-1.2, -1.5, -1.7], index=['a', 'd', 'f'])
-frame['non_existent_column'] = val
-frame
-#   state	year	pop		non_existent_column
-# id				
-# a	Ohio	2000	1.5		-1.2
-# b	Ohio	2001	1.7		NaN
-# c	Ohio	2002	3.6		NaN
-# d	Nevada	2001	2.4		-1.5
-# e	Nevada	2002	2.9		NaN
-# f	Nevada	2003	3.2		-1.7
-```
+> ```python
+> val = pd.Series([-1.2, -1.5, -1.7], index=['a', 'd', 'f'])
+> frame['non_existent_column'] = val
+> frame
+> #   state	year	pop		non_existent_column
+> # id				
+> # a	Ohio	2000	1.5		-1.2
+> # b	Ohio	2001	1.7		NaN
+> # c	Ohio	2002	3.6		NaN
+> # d	Nevada	2001	2.4		-1.5
+> # e	Nevada	2002	2.9		NaN
+> # f	Nevada	2003	3.2		-1.7
+> ```
 
 #### Deleting
 The `del` keyword can be used to delete columns: `del frame['non_existent_column']`.
