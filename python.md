@@ -110,7 +110,7 @@ The *slice* syntax is a way to refer to sub-parts of sequences. The slice `s[sta
 
 You can access a string using the standard `[]` syntax with indexes (zero-based). Also, python uses negative numbers to give easy access to the chars at the end of the string: s[-1] is the last char.
 
-![Python List with indexes explained](image.png)
+![Python List with indexes explained](./imgs/python_indexing.png)
 
 **Positive indexes:**
 
