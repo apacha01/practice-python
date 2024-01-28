@@ -1,3 +1,17 @@
+- [NumPy](#numpy)
+	- [Arrays](#arrays)
+		- [Arithmetic Operations](#arithmetic-operations)
+		- [Some methods](#some-methods)
+		- [Selection](#selection)
+			- [Basic Indexing](#basic-indexing)
+			- [Fancy Indexing](#fancy-indexing)
+	- [Math functions](#math-functions)
+	- [Randomness](#randomness)
+	- [Universal Functions](#universal-functions)
+	- [Sorting](#sorting)
+	- [Unique And Other Set Logic](#unique-and-other-set-logic)
+	- [Broadcasting](#broadcasting)
+
 # NumPy
 
 Short for Numerical Python, a library for Python.
@@ -262,3 +276,51 @@ np.in1d(values, [2, 3, 6])
 ```
 
 [List of set operations](https://wesmckinney.com/book/numpy-basics#tbl-table_setops) from McKinney book.
+
+## Broadcasting
+
+*Broadcasting* governs how operations work between arrays of different shapes. Two arrays are compatible for broadcasting if for each trailing dimension (i.e., starting from the end) the axis lengths match or if either of the lengths is 1. Broadcasting is then performed over the missing or length 1 dimensions. E.g:
+```python
+arr = np.arange(5)
+# array([0, 1, 2, 3, 4])
+
+arr * 4
+# array([0, 4, 8, 12, 16])
+```
+
+This is a simple example with 1 length arrays, consider a matrix now. They are compatible if the axis length are the same or one of them is 1:
+
+<img src="./imgs/numpy_broadcasting_axis_0.png" alt="Broadcasting example for adding a 4x3 matrix with an array of len 3 on axis 0" width="1000"/>
+
+In this case, since the 2nd array (3,) has length 3, it is compatible for broadcasting across axis 0 because the trailing dimension in `arr` is 3 (4,3) and therefore matches. But what if we want to add across axis 1? To add over axis 1 (i.e., add the values in `arr` mean from each row), the smaller array must have the shape (4, 1):
+```python
+# array = array([[0, 0, 0],
+#        	[1, 1, 1],
+#        	[2, 2, 2],
+#        	[3, 3, 3]])
+
+# arr = array([1, 2, 3, 4])
+arr.shape
+(4,)
+
+arr.reshape((4,1))
+# array([[1],
+#        [2],
+#        [3],
+#        [4]])
+
+array + arr.reshape((4,1))
+# array([[1, 1, 1],
+#        [3, 3, 3],
+#        [5, 5, 5],
+#        [7, 7, 7]])
+```
+
+For a more graphic example check this:
+
+<img src="./imgs/numpy_broadcasting_axis_1.png" alt="Broadcasting example for adding a 4x3 matrix with an array of len 4 on axis 1" width="1000"/>
+
+
+Here is an example for a 3d array addition with a 2d array:
+
+<img src="./imgs/numpy_broadcasting_3d_2d.png" alt="Broadcasting example for adding a (3,4,2) matrix with a (4,2) on axis 0" width="1000"/>
