@@ -13,6 +13,8 @@
 			- [Series](#series-1)
 			- [DataFrames](#dataframes-1)
 		- [Arithmetic and Data Alignment](#arithmetic-and-data-alignment)
+			- [Filling values](#filling-values)
+			- [Operations Between DataFrames and Series](#operations-between-dataframes-and-series)
 
 
 # Pandas
@@ -447,3 +449,126 @@ data.loc[data["four"] > 5]
 ```
 
 ### Arithmetic and Data Alignment
+
+pandas makes it simpler to work with objects with different indexes. E.g, when adding objects, if any index pairs are not the same, the respective index in the result will be the union of the index pairs:
+```python
+s1 = pd.Series([7.3, -2.5, 3.4, 1.5], index=["a", "c", "d", "e"])
+s2 = pd.Series([-2.1, 3.6, -1.5, 4], index=["a", "c", "e", "f"])
+# s1							s2
+# a    7.3						a   -2.1
+# c   -2.5						c    3.6
+# d    3.4						e   -1.5
+# e    1.5						f    4.0
+# dtype: float64				dtype: float64
+
+df1 = pd.DataFrame(np.arange(9.).reshape((3, 3)), columns=list("bcd"), index=["Ohio", "Texas", "Colorado"])
+df2 = pd.DataFrame(np.arange(9.).reshape((3, 3)), columns=list("bde"), index=["Utah", "Ohio", "Texas"])
+# df1								df2
+# 			b    c    d						b     d     e
+# Ohio      0.0  1.0  2.0			Utah    0.0   1.0   2.0
+# Texas     3.0  4.0  5.0			Ohio    3.0   4.0   5.0
+# Colorado  6.0  7.0  8.0			Texas   6.0   7.0   8.0
+
+s1 + s2
+# a    5.2
+# c    1.1
+# d    NaN
+# e    0.0
+# f    NaN
+# dtype: float64
+
+df1 + df2
+# 			b   c     d   e
+# Colorado  NaN NaN   NaN NaN
+# Ohio      3.0 NaN   6.0 NaN
+# Oregon    NaN NaN   NaN NaN
+# Texas     9.0 NaN  12.0 NaN
+# Utah      NaN NaN   NaN NaN
+```
+
+If you add objects with no column or row labels in common, the result will contain all nulls (NaN).
+
+#### Filling values
+
+If instead of using the `+` you use the `.add()` method you can chose a `fill_value` for any missing value:
+```python
+df1 + df2
+# 			b   c     d   e
+# Colorado  NaN NaN   NaN NaN
+# Ohio      3.0 NaN   6.0 NaN
+# Oregon    NaN NaN   NaN NaN
+# Texas     9.0 NaN  12.0 NaN
+# Utah      NaN NaN   NaN NaN
+
+df1.add(df2, fill_value=0)
+# 			b		c		d		e
+# Colorado	6.0		7.0		8.0		NaN
+# Ohio		3.0		1.0		6.0		5.0
+# Texas		9.0		4.0		12.0	8.0
+# Utah		0.0		NaN		1.0		2.0
+```
+
+Note that it doesn't prevent missing values if there is a column missing in both tables that's added.
+
+The examples given where just on addition, you can find a detailed list of all operations with it's respective function [here](https://wesmckinney.com/book/pandas-basics#tbl-table_flex_arith).
+
+#### Operations Between DataFrames and Series
+
+As with [NumPy arrays of different dimensions using broadcasting](./numpy.md#broadcasting), arithmetic between DataFrame and Series is also defined, and they are similar. Consider the following data:
+```python
+frame
+#           b     d     e
+# Utah    0.0   1.0   2.0
+# Ohio    3.0   4.0   5.0
+# Texas   6.0   7.0   8.0
+# Oregon  9.0  10.0  11.0
+
+series = frame.iloc[0]
+# b    0.0
+# d    1.0
+# e    2.0
+# Name: Utah, dtype: float64
+```
+
+By default, arithmetic between DataFrame and Series matches the index of the Series on the columns of the DataFrame, broadcasting down the rows:
+```python
+frame - series
+# 			b    d    e
+# Utah    0.0  0.0  0.0
+# Ohio    3.0  3.0  3.0
+# Texas   6.0  6.0  6.0
+# Oregon  9.0  9.0  9.0
+```
+
+If an index value is not found in either the DataFrame’s columns or the Series’s index, the objects will be reindexed to form the union:
+```python
+series2
+# b    0
+# e    1
+# f    2
+# dtype: int64
+
+frame + series
+# 			b   d     e   f
+# Utah    0.0 NaN   3.0 NaN
+# Ohio    3.0 NaN   6.0 NaN
+# Texas   6.0 NaN   9.0 NaN
+# Oregon  9.0 NaN  12.0 NaN
+```
+
+If you want to instead broadcast over the columns, matching on the rows, you have to use one of the arithmetic methods and specify to match over the index. For example:
+```python
+series3
+# Utah       1.0
+# Ohio       4.0
+# Texas      7.0
+# Oregon    10.0
+# Name: d, dtype: float64
+
+frame.sub(series3, axis="index")
+#          	b    d    e
+# Utah   -1.0  0.0  1.0
+# Ohio   -1.0  0.0  1.0
+# Texas  -1.0  0.0  1.0
+# Oregon -1.0  0.0  1.0
+```
