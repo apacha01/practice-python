@@ -26,6 +26,9 @@
 	- [Data Loading, Storage, and File Formats](#data-loading-storage-and-file-formats)
 		- [Reading and Writing Data in Text Format](#reading-and-writing-data-in-text-format)
 			- [Basic CSV reading](#basic-csv-reading)
+				- [Reading text files in pieces](#reading-text-files-in-pieces)
+				- [Writing data to text format](#writing-data-to-text-format)
+				- [Working with Other Delimited Formats](#working-with-other-delimited-formats)
 
 
 # Pandas
@@ -912,3 +915,66 @@ pd.read_csv("examples/csv_file4.csv", keep_default_na=False)
 # 1       two  5   6         8   world
 # 2     three  9  10  11.0  12     foo
 ```
+
+##### Reading text files in pieces
+
+You can use the `nrows` argument to read only a part of the file, or the `chunksize` argument to specify the size of the chunks you want to read:
+```python
+pd.read_csv("examples/csv_file4.csv", nrows=2)
+#   something  a   b     c   d message
+# 0       one  1   2   3.0   4      NA
+# 1       two  5   6         8   world
+
+chunker = pd.read_csv("examples/csv_file4.csv", chunksize=1) # chunker is of type <pandas.io.parsers.readers.TextFileReader>
+for piece in chunker:
+    # do something with the values
+```
+> [!NOTE]
+> TextFileReader is also equipped with a get_chunk method that enables you to read pieces of an arbitrary size.
+
+##### Writing data to text format
+
+Using DataFrame’s to_csv method, we can write the data out to a comma-separated file. Other delimiters can be used with the `sep` parameter:
+```python
+data = pd.read_csv("examples/csv_file4.csv")
+
+data.to_csv("examples/out.csv")
+# ,something,a,b,c,d,message
+# 0,one,1,2,3.0,4,
+# 1,two,5,6,,8,world
+# 2,three,9,10,11.0,12,foo
+
+data.to_csv("examples/out.csv", sep='|')
+# |something|a|b|c|d|message
+# 0|one|1|2|3.0|4|
+# 1|two|5|6||8|world
+# 2|three|9|10|11.0|12|foo
+```
+
+Missing values appear as empty string but you can change it with the `na_rep` parameter:
+```python
+data = pd.read_csv("examples/csv_file4.csv")
+
+data.to_csv("examples/out.csv", na_rep="NULL")
+# ,something,a,b,c,d,message
+# 0,one,1,2,3.0,4,NULL
+# 1,two,5,6,NULL,8,world
+# 2,three,9,10,11.0,12,foo
+```
+
+There are other params, like the `index` and `header` boolean params to save (or not) the index and header to the file. Check [the docs](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_csv.html) for all params.
+
+##### Working with Other Delimited Formats
+
+CSV files come in many different flavors. To define a new format with a different delimiter, string quoting convention, or line terminator, we could define a simple subclass of `csv.Dialect` using Python’s built-in `csv` module. And then just read with that same module:
+```python
+class my_dialect(csv.Dialect):
+    lineterminator = "\n"
+    delimiter = ";"
+    quotechar = '"'					# in case the characters in the file are quoted (unlike prev examples)
+    quoting = csv.QUOTE_MINIMAL
+
+reader = csv.reader(f, dialect=my_dialect)
+```
+
+Here is a [list of options](https://wesmckinney.com/book/accessing-data#tbl-table_csv_dialect) for a dialect.
