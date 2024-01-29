@@ -142,7 +142,7 @@ pd.DataFrame(data, columns=["year", "state", "pop", "non_existent_column"])
 # 5  2003  Nevada  3.2                  NaN
 ```
 > [!WARNING]
-> New columns cannot be created with the frame.new_column dot attribute notation.
+> New columns cannot be created with the `frame.new_column` dot attribute notation.
 
 #### Selection
 A column in a DataFrame can be retrieved as a Series either by dictionary-like notation (`df['column']`) or by using the dot attribute notation (`df.column`). 
@@ -185,6 +185,8 @@ Columns can be modified by assignment. You can use:
 > # e	Nevada	2002	2.9		NaN
 > # f	Nevada	2003	3.2		-1.7
 > ```
+
+You can also modify the name of the column with `frame.rename('old_column': 'new_column')`, or the type of the column with `frame['column'].astype(<type>)`.
 
 #### Deleting
 The `del` keyword can be used to delete columns: `del frame['non_existent_column']`.
