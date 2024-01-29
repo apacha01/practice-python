@@ -30,6 +30,9 @@
 				- [Writing data to text format](#writing-data-to-text-format)
 				- [Working with Other Delimited Formats](#working-with-other-delimited-formats)
 			- [JSON Data](#json-data)
+			- [XML and HTML](#xml-and-html)
+				- [Parsing HTML](#parsing-html)
+				- [Parsing XML](#parsing-xml)
 
 
 # Pandas
@@ -1031,3 +1034,19 @@ pd.read_json("examples/json_file.json")
 # 2  7  8  9
 ```
 If you need to export data from pandas to JSON, one way is to use the to_json methods on Series and DataFrame.
+
+#### XML and HTML
+
+Python has many libraries for reading and writing data in HTML and XML formats.
+
+To install these libraries use: `pip3 install lxml beautifulsoup4 html5lib` (or your preferred package manager).
+
+##### Parsing HTML
+
+Pandas has a built-in function, `read_html`, which uses all of the python libraries previously mentioned to automatically parse **tables** out of HTML files as DataFrame objects.
+
+The `read_html` function has a number of options, but by default it searches for and attempts to parse all tabular data contained within `<table>` tags. The result is a list of DataFrame objects.
+
+##### Parsing XML
+
+You can read the explanation of how it works (with `lxml` library an such) [here](https://wesmckinney.com/book/accessing-data#io_file_formats_xml). But pandas simplifies the process with the `read_xml` function. So just pass the path to your `.xml` file to `read_xml` and the result is a DataFrame.
