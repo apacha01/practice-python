@@ -19,6 +19,7 @@
 		- [Sorting and Ranking](#sorting-and-ranking)
 			- [Sorting](#sorting)
 			- [Ranking](#ranking)
+		- [Axis Indexes with Duplicate Labels](#axis-indexes-with-duplicate-labels)
 
 
 # Pandas
@@ -684,3 +685,23 @@ obj.rank()
 Ranks can also be assigned according to the order in which they’re observed in the data with the `method` parameter: `obj.rank(method="first")`. The method can be any of the values [in this table](https://wesmckinney.com/book/pandas-basics#tbl-table_pandas_rank), not necessarily `"first"`.
 
 And the `ascending` parameter is here as well, just like when sorting.
+
+### Axis Indexes with Duplicate Labels
+While many pandas functions (like reindex) require that the labels be unique, it’s not mandatory. The `is_unique` property of the `index` can tell you whether or not its labels are unique: `frame.index.is_unique`.
+```python
+obj = pd.Series(np.arange(5), index=["a", "a", "b", "b", "c"])
+
+obj.index.is_unique
+# False
+```
+Data selection is one of the main things that behaves differently with duplicates. Indexing a label with multiple entries returns a Series, while single entries return a scalar value:
+```python
+obj["a"]
+# a    0
+# a    1
+# dtype: int64
+
+obj["c"]
+# 4
+```
+The same logic extends to indexing rows (or columns) in a DataFrame, a repeated index will return a DataFrame and non repeated values will return a Series.
