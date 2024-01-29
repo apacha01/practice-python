@@ -22,6 +22,7 @@
 		- [Axis Indexes with Duplicate Labels](#axis-indexes-with-duplicate-labels)
 	- [Computing Descriptive Statistics](#computing-descriptive-statistics)
 		- [Correlation and Covariance](#correlation-and-covariance)
+		- [Unique Values, Value Counts, and Membership](#unique-values-value-counts-and-membership)
 
 
 # Pandas
@@ -800,3 +801,7 @@ price.corrwith(volume)
 # dtype: float64
 ```
 Passing `axis="columns"` does things row-by-row instead.
+
+### Unique Values, Value Counts, and Membership
+
+This section is quite short and concise so no need for summarizing, just [read here](https://wesmckinney.com/book/pandas-basics#pandas_unique_value_counts).
