@@ -15,6 +15,7 @@
 		- [Arithmetic and Data Alignment](#arithmetic-and-data-alignment)
 			- [Filling values](#filling-values)
 			- [Operations Between DataFrames and Series](#operations-between-dataframes-and-series)
+		- [Function Application](#function-application)
 
 
 # Pandas
@@ -574,3 +575,32 @@ frame.sub(series3, axis="index")
 # Texas  -1.0  0.0  1.0
 # Oregon -1.0  0.0  1.0
 ```
+
+### Function Application
+
+[NumPy ufuncs](./numpy.md#universal-functions) (element-wise array methods) also work with pandas objects. Another frequent operation is applying a function on one-dimensional arrays to each column or row. DataFrame’s apply method does exactly this:
+```python
+# Same frame as previous section
+frame.apply(lambda x: x.mean())
+# b    4.5
+# d    5.5
+# e    6.5
+# dtype: float64
+
+# Across columns
+frame.apply(lambda x: x.mean(), axis="columns")
+# Utah       1.0
+# Ohio       4.0
+# Texas      7.0
+# Oregon    10.0
+# dtype: float64
+```
+
+Many of the most common array statistics (like sum and mean) are DataFrame methods, so using apply is not necessary (as in the example). The function passed to apply need not return a scalar value; it can also return a Series with multiple values:
+```python
+frame.apply(lambda x: pd.Series([x.mean()], index=["mean"]))
+# 		  b	  d	  e
+# mean	4.5	5.5	6.5
+```
+
+Instead row/column-wise you can do element-wise arithmetic with the `.applymap()` method.
