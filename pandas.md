@@ -29,6 +29,7 @@
 				- [Reading text files in pieces](#reading-text-files-in-pieces)
 				- [Writing data to text format](#writing-data-to-text-format)
 				- [Working with Other Delimited Formats](#working-with-other-delimited-formats)
+			- [JSON Data](#json-data)
 
 
 # Pandas
@@ -978,3 +979,55 @@ reader = csv.reader(f, dialect=my_dialect)
 ```
 
 Here is a [list of options](https://wesmckinney.com/book/accessing-data#tbl-table_csv_dialect) for a dialect.
+
+#### JSON Data
+
+JSON is very nearly valid Python code (dictionaries) with the exception of its null value `null` and some other nuances (like disallowing trailing commas at the end of lists). There are several Python libraries for reading and writing JSON data, `json` being one of them and it is built into the Python standard library.
+
+To convert a JSON string to Python form, use `json.loads`, and use `json.dumps` to go from a json object to a string:
+```python
+obj = """
+{
+ "name": "Wes",
+ "cities_lived": ["Akron", "Nashville", "New York", "San Francisco"],
+ "pet": null,
+ "siblings": [{"name": "Scott", "age": 34, "hobbies": ["guitars", "soccer"]},
+              {"name": "Katie", "age": 42, "hobbies": ["diving", "art"]}]
+}
+"""
+
+result = json.loads(obj)
+result
+# {'name': 'Wes',
+#  'cities_lived': ['Akron', 'Nashville', 'New York', 'San Francisco'],
+#  'pet': None,
+#  'siblings': [{'name': 'Scott',
+#    'age': 34,
+#    'hobbies': ['guitars', 'soccer']},
+#   {'name': 'Katie', 'age': 42, 'hobbies': ['diving', 'art']}]}
+
+json_string = json.dumps(result)
+json_string
+# '{"name": "Wes", "cities_lived": ["Akron", "Nashville", "New York", "San
+#  Francisco"], "pet": null, "siblings": [{"name": "Scott", "age": 34, "hobbies": [
+# "guitars", "soccer"]}, {"name": "Katie", "age": 42, "hobbies": ["diving", "art"]}
+# ]}'
+```
+
+To convert this into a DataFrame is up to you, you can pass a list of dictionaries (which were previously JSON objects) to the DataFrame constructor and select a subset of the data fields or use the pandas built int `read_json` method:
+```json
+// examples/json_file.json
+[
+	{"a": 1, "b": 2, "c": 3},
+	{"a": 4, "b": 5, "c": 6},
+	{"a": 7, "b": 8, "c": 9}
+]
+```
+```python
+pd.read_json("examples/json_file.json")
+# 	 a  b  c
+# 0  1  2  3
+# 1  4  5  6
+# 2  7  8  9
+```
+If you need to export data from pandas to JSON, one way is to use the to_json methods on Series and DataFrame.
