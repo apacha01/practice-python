@@ -23,6 +23,9 @@
 	- [Computing Descriptive Statistics](#computing-descriptive-statistics)
 		- [Correlation and Covariance](#correlation-and-covariance)
 		- [Unique Values, Value Counts, and Membership](#unique-values-value-counts-and-membership)
+	- [Data Loading, Storage, and File Formats](#data-loading-storage-and-file-formats)
+		- [Reading and Writing Data in Text Format](#reading-and-writing-data-in-text-format)
+			- [Basic CSV reading](#basic-csv-reading)
 
 
 # Pandas
@@ -805,3 +808,107 @@ Passing `axis="columns"` does things row-by-row instead.
 ### Unique Values, Value Counts, and Membership
 
 This section is quite short and concise so no need for summarizing, just [read here](https://wesmckinney.com/book/pandas-basics#pandas_unique_value_counts).
+
+## Data Loading, Storage, and File Formats
+
+**data loading**: Reading data and making it accessible.
+**parsing**: interpreting data as tables and different data types.
+
+### Reading and Writing Data in Text Format
+
+[Here is a full list of functions](https://wesmckinney.com/book/accessing-data#tbl-table_parsing_functions) to read data from text and binary files.
+
+Because of how messy data in the real world can be, some of the data loading functions have accumulated a long list of optional arguments over time (`pd.read_csv` has around 50). The [online pandas documentation](https://pandas.pydata.org/docs/) has many examples about how each of these works, so go there for a full explanation and examples of every parameter and function. Or check this [list of frequently used `read_csv` arguments](https://wesmckinney.com/book/accessing-data#tbl-table_read_csv_function)
+
+#### Basic CSV reading
+
+Use `pd.read_csv("examples/csv_file.csv")` to read the file. It will be loaded into a DataFrame with the headers in the file (if the file has no header set the `header` argument to None, and you can specify your own names with the `names` argument):
+```python
+# csv_file.csv
+# a,b,c,d,message
+# 1,2,3,4,hello
+# 5,6,7,8,world
+# 9,10,11,12,foo
+
+# csv_file2.csv
+# 1,2,3,4,hello
+# 5,6,7,8,world
+# 9,10,11,12,foo
+
+pd.read_csv("examples/csv_file.csv")
+# 	 a   b   c   d message
+# 0  1   2   3   4   hello
+# 1  5   6   7   8   world
+# 2  9  10  11  12     foo
+
+pd.read_csv("examples/csv_file2.csv", header=None)
+# 	 0   1   2   3 	     4
+# 0  1   2   3   4   hello
+# 1  5   6   7   8   world
+# 2  9  10  11  12     foo
+
+pd.read_csv("examples/csv_file2.csv", header=None, names=['a','b','c','d','message'])
+# 	 a   b   c   d message
+# 0  1   2   3   4   hello
+# 1  5   6   7   8   world
+# 2  9  10  11  12     foo
+```
+
+You can also indicate you want the column at index 4 (or named "message") using the `index_col` argument like this:
+```python
+pd.read_csv("examples/csv_file2.csv", header=None, names=['a','b','c','d','message'], index_col="messages")
+#          a   b   c   d
+# message               
+# hello    1   2   3   4
+# world    5   6   7   8
+# foo      9  10  11  12
+```
+
+In some cases, a table might not have a fixed delimiter, using whitespace or some other pattern to separate fields. In these cases, you can pass a regular expression as a delimiter for `pd.read_csv` with the `sep` argument. This can be expressed by the regular expression `\s+`, so we have then:
+```shell
+cat examples/csv_file3.txt
+A         B         C
+aaa -0.264438 -1.026059 -0.619500
+bbb  0.927272  0.302904 -0.032399
+ccc -0.264273 -0.386314 -0.217601
+ddd -0.871858 -0.348382  1.100491
+```
+```python
+pd.read_csv("examples/csv_file3.txt", sep="\s+")
+#             A         B         C
+# aaa -0.264438 -1.026059 -0.619500
+# bbb  0.927272  0.302904 -0.032399
+# ccc -0.264273 -0.386314 -0.217601
+# ddd -0.871858 -0.348382  1.100491
+```
+> [!NOTE]
+> Because there was one fewer column name than the number of data rows, pandas takes the first column as the DataFrame’s index.
+
+Missing data is usually either not present (empty string) or marked by some placeholder value. By default, pandas uses a set of commonly occurring placeholders, such as `NA` and `NULL`, but you can specify them with the `na_values` option, which accepts a sequence of strings to add to the default list of strings recognized as missing. You can also disable these default values setting `keep_default_na` to `False`:
+```shell
+cat examples/csv_file4.txt
+# something,a,b,c,d,message
+# one,1,2,3,4,NA
+# two,5,6,,8,world			<- Note the two consecutive commas
+# three,9,10,11,12,foo
+```
+```python
+pd.read_csv("examples/csv_file4.csv")
+#   something  a   b     c   d message
+# 0       one  1   2   3.0   4     NaN
+# 1       two  5   6   NaN   8   world
+# 2     three  9  10  11.0  12     foo
+
+
+pd.read_csv("examples/csv_file4.csv", na_values=["foo"])
+#   something  a   b     c   d message
+# 0       one  1   2   3.0   4     NaN
+# 1       two  5   6   NaN   8   world
+# 2     three  9  10  11.0  12     NaN
+
+pd.read_csv("examples/csv_file4.csv", keep_default_na=False)
+#   something  a   b     c   d message
+# 0       one  1   2   3.0   4      NA
+# 1       two  5   6         8   world
+# 2     three  9  10  11.0  12     foo
+```
