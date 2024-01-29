@@ -16,6 +16,9 @@
 			- [Filling values](#filling-values)
 			- [Operations Between DataFrames and Series](#operations-between-dataframes-and-series)
 		- [Function Application](#function-application)
+		- [Sorting and Ranking](#sorting-and-ranking)
+			- [Sorting](#sorting)
+			- [Ranking](#ranking)
 
 
 # Pandas
@@ -604,3 +607,80 @@ frame.apply(lambda x: pd.Series([x.mean()], index=["mean"]))
 ```
 
 Instead row/column-wise you can do element-wise arithmetic with the `.applymap()` method.
+
+### Sorting and Ranking
+
+#### Sorting
+You can sort a Series or a DataFrame with the `sort_`* methods. There's `sort_index` and `sort_values` methods, which are pretty self explanatory. The `sort_index` on DataFrames, though, can be used on either axis:
+```python
+frame = pd.DataFrame(np.arange(8).reshape((2, 4)), index=["three", "one"], columns=["d", "a", "b", "c"])
+
+frame
+#        d  a  b  c
+# three  0  1  2  3
+# one    4  5  6  7
+
+frame.sort_index()
+#        d  a  b  c
+# one    4  5  6  7
+# three  0  1  2  3
+
+frame.sort_index(axis="columns")
+#        a  b  c  d
+# three  1  2  3  0
+# one    5  6  7  4
+```
+
+With `sort_values`, any missing value will be sorted to the end of the Series or DataFrames, although they can be sorted to the start instead by using the `na_position` option: `frame.sort_values(na_position="first")`.
+
+**DataFrames require the parameter `by` for `sort_values`**, since pandas doesn't know which value to sort by:
+```python
+frame = pd.DataFrame({"b": [4, 7, -3, 2], "a": [0, 1, 0, 1]})
+
+frame
+#    b  a
+# 0  4  0
+# 1  7  1
+# 2 -3  0
+# 3  2  1
+
+frame.sort_values() # TypeError
+
+frame.sort_values("b") # same as frame.sort_values(by="b")
+#    b  a
+# 2 -3  0
+# 3  2  1
+# 0  4  0
+# 1  7  1
+
+# You can sort by multiple columns as well
+frame.sort_values(["a", "b"])
+#    b  a
+# 2 -3  0
+# 0  4  0
+# 3  2  1
+# 1  7  1
+```
+
+There's an optional parameter `ascending`, which is a boolean for whether to sort in ascending order or not.
+
+#### Ranking
+
+Ranking assigns ranks from one through the number of valid data points in an array, starting from the lowest value. If there's a tie, `rank()` assigns each group the mean rank:
+```python
+obj = pd.Series([7, -5, 7, 4, 2, 0, 4])
+
+obj.rank()
+# 0    6.5
+# 1    1.0
+# 2    6.5
+# 3    4.5
+# 4    3.0
+# 5    2.0
+# 6    4.5
+# dtype: float64
+```
+
+Ranks can also be assigned according to the order in which they’re observed in the data with the `method` parameter: `obj.rank(method="first")`. The method can be any of the values [in this table](https://wesmckinney.com/book/pandas-basics#tbl-table_pandas_rank), not necessarily `"first"`.
+
+And the `ascending` parameter is here as well, just like when sorting.
