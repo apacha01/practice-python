@@ -21,6 +21,7 @@
 			- [Ranking](#ranking)
 		- [Axis Indexes with Duplicate Labels](#axis-indexes-with-duplicate-labels)
 	- [Computing Descriptive Statistics](#computing-descriptive-statistics)
+		- [Correlation and Covariance](#correlation-and-covariance)
 
 
 # Pandas
@@ -749,3 +750,53 @@ obj.describe()
 ```
 
 Besides `describe`, [here is a list](https://wesmckinney.com/book/pandas-basics#tbl-table_descriptive_stats) of some descriptive and summary statistics.
+
+### Correlation and Covariance
+
+The `corr` method of Series computes the correlation of the overlapping, non-NA, aligned-by-index values in two Series. Relatedly, `cov` computes the covariance:
+
+```python
+price = pd.read_pickle("examples/price.pkl")	# just some stocks info
+volume = pd.read_pickle("examples/volume.pkl")	# for example
+
+price["MSFT"].corr(price["IBM"])
+# 0.49976361144151166
+
+price["MSFT"].cov(price["IBM"])
+# 8.870655479703549e-05
+```
+
+DataFrame’s `corr` and `cov` methods, on the other hand, return a full correlation or covariance matrix as a DataFrame, respectively:
+```python
+returns.corr()
+#           AAPL      GOOG       IBM      MSFT
+# AAPL  1.000000  0.407919  0.386817  0.389695
+# GOOG  0.407919  1.000000  0.405099  0.465919
+# IBM   0.386817  0.405099  1.000000  0.499764
+# MSFT  0.389695  0.465919  0.499764  1.000000
+
+returns.cov()
+#           AAPL      GOOG       IBM      MSFT
+# AAPL  0.000277  0.000107  0.000078  0.000095
+# GOOG  0.000107  0.000251  0.000078  0.000108
+# IBM   0.000078  0.000078  0.000146  0.000089
+# MSFT  0.000095  0.000108  0.000089  0.000215
+```
+
+Using DataFrame’s `corrwith` method, you can compute pair-wise correlations between a DataFrame’s columns or rows with another Series or DataFrame. Passing a Series returns a Series with the correlation value computed for each column, while passing a DataFrame computes the correlations of matching column names:
+```python
+price.corrwith(price["IBM"])
+# AAPL    0.386817
+# GOOG    0.405099
+# IBM     1.000000
+# MSFT    0.499764
+# dtype: float64
+
+price.corrwith(volume)
+# APL   -0.075565
+# GOOG   -0.007067
+# IBM    -0.204849
+# MSFT   -0.092950
+# dtype: float64
+```
+Passing `axis="columns"` does things row-by-row instead.
