@@ -20,6 +20,7 @@
 			- [Sorting](#sorting)
 			- [Ranking](#ranking)
 		- [Axis Indexes with Duplicate Labels](#axis-indexes-with-duplicate-labels)
+	- [Computing Descriptive Statistics](#computing-descriptive-statistics)
 
 
 # Pandas
@@ -705,3 +706,46 @@ obj["c"]
 # 4
 ```
 The same logic extends to indexing rows (or columns) in a DataFrame, a repeated index will return a DataFrame and non repeated values will return a Series.
+
+## Computing Descriptive Statistics
+
+Methods like `mean()` and such aggregation (or reduction) methods support, besides de `axis` param already shown, [this options](https://wesmckinney.com/book/pandas-basics#tbl-table_pandas_reduction).
+
+Other methods are accumulations:
+```python
+df = pd.DataFrame([[1.4, np.nan], [7.1, -4.5], [np.nan, np.nan], [0.75, -1.3]], index=["a", "b", "c", "d"], columns=["one", "two"])
+
+df.cumsum()
+#     one  two
+# a  1.40  NaN
+# b  8.50 -4.5
+# c   NaN  NaN
+# d  9.25 -5.8
+```
+Some methods are neither reductions nor accumulations. `describe` is one such example, producing multiple summary statistics in one shot:
+```python
+df.describe() 
+#             one       two
+# count  3.000000  2.000000
+# mean   3.083333 -2.900000
+# std    3.493685  2.262742
+# min    0.750000 -4.500000
+# 25%    1.075000 -3.700000
+# 50%    1.400000 -2.900000
+# 75%    4.250000 -2.100000
+# max    7.100000 -1.300000
+```
+
+On nonnumeric data, describe produces alternative summary statistics:
+```python
+obj = pd.Series(["a", "a", "b", "c"] * 4)
+
+obj.describe()
+# count     16
+# unique     3
+# top        a
+# freq       8
+# dtype: object
+```
+
+Besides `describe`, [here is a list](https://wesmckinney.com/book/pandas-basics#tbl-table_descriptive_stats) of some descriptive and summary statistics.
