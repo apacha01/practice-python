@@ -33,6 +33,7 @@
 			- [XML and HTML](#xml-and-html)
 				- [Parsing HTML](#parsing-html)
 				- [Parsing XML](#parsing-xml)
+		- [Binary Data Formats](#binary-data-formats)
 
 
 # Pandas
@@ -1050,3 +1051,12 @@ The `read_html` function has a number of options, but by default it searches for
 ##### Parsing XML
 
 You can read the explanation of how it works (with `lxml` library an such) [here](https://wesmckinney.com/book/accessing-data#io_file_formats_xml). But pandas simplifies the process with the `read_xml` function. So just pass the path to your `.xml` file to `read_xml` and the result is a DataFrame.
+
+### Binary Data Formats
+
+You can read binary data with Python’s built-in `pickle` module, but pandas objects all have a `to_pickle` method that writes the data to disk in pickle format. Pickle files are in general readable only in Python. You can read any "pickled" object stored in a file by using the built-in `pickle` directly, or even more conveniently using `read_pickle`.
+
+> [!WARNING]
+> `pickle` is recommended only as a short-term storage format. Since it is hard to guarantee the format will be stable over time; an object pickled today may not unpickle with a later version of a library.
+
+Pandas has built-in support for several other open source binary data formats, such as HDF5, ORC, and Apache Parquet (you'd need to install a package, like `pyarrow` for the `read_parquet`).
