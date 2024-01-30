@@ -1,3 +1,36 @@
+- [Python](#python)
+	- [Python code](#python-code)
+		- [Modules](#modules)
+		- [User defined functions](#user-defined-functions)
+			- [Lambda Functions](#lambda-functions)
+		- [Command Line](#command-line)
+		- [Variables](#variables)
+		- [Code checking](#code-checking)
+	- [Strings](#strings)
+		- [Formatting](#formatting)
+			- [.format() method](#format-method)
+			- [f strings - since python 3.6](#f-strings---since-python-36)
+			- [% operator](#-operator)
+		- [Slices](#slices)
+		- [Byte vs Unicode](#byte-vs-unicode)
+	- [Data Structures](#data-structures)
+		- [Slices](#slices-1)
+		- [Lists](#lists)
+		- [Tuples](#tuples)
+		- [Sets](#sets)
+		- [Dicts](#dicts)
+			- [String % operator with dicts](#string--operator-with-dicts)
+		- [Del](#del)
+	- [The range() function](#the-range-function)
+	- [Operators](#operators)
+		- [Logical operators](#logical-operators)
+		- [Membership operators](#membership-operators)
+		- [Identity operators](#identity-operators)
+	- [Files](#files)
+	- [Classes](#classes)
+		- [Inheritance](#inheritance)
+
+
 # Python
 A dynamic, interpreted (bytecode-compiled) language. 
 
@@ -262,12 +295,12 @@ This sequence returned is not a list, but of type `range`.
 ## Operators
 Only python specific ones will be here, check [the docs](https://docs.python.org/3/reference/lexical_analysis.html#operators) to see all operators.
 
-### Logical operators:
+### Logical operators
 * `and`: like `&&` in C
 * `or`: like `||` in C
 * `not`: like `~` in C
 
-### Membership operators:
+### Membership operators
 * `in`: checks whether a value is in a collection. E.g. `1 in [1,2,3,4]` which returns `True`
 
 ### Identity operators
