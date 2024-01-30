@@ -35,6 +35,7 @@
 				- [Parsing XML](#parsing-xml)
 		- [Binary Data Formats](#binary-data-formats)
 		- [Reading Microsoft Excel Files](#reading-microsoft-excel-files)
+		- [Using HDF5 Format](#using-hdf5-format)
 
 
 # Pandas
@@ -823,6 +824,8 @@ This section is quite short and concise so no need for summarizing, just [read h
 **data loading**: Reading data and making it accessible.
 **parsing**: interpreting data as tables and different data types.
 
+Here are the [official panda docs on I/O tools/formats](https://pandas.pydata.org/docs/user_guide/io.html).
+
 ### Reading and Writing Data in Text Format
 
 [Here is a full list of functions](https://wesmckinney.com/book/accessing-data#tbl-table_parsing_functions) to read data from text and binary files.
@@ -1100,4 +1103,73 @@ writer.close()
 
 # Without writer
 frame.to_excel("examples/file_to_save.xlsx", sheet_name="Sheet1", index=False)
+```
+
+### Using HDF5 Format
+
+The “HDF” in HDF5 stands for *hierarchical data format* and its extension is `.h5`. Each HDF5 file can store multiple datasets, supporting metadata and it is best suited for write-once, read-many datasets. Compared with simpler formats, HDF5 supports on-the-fly compression with a variety of compression modes, enabling data with repeated patterns to be stored more efficiently. HDF5 with pandas uses a library called `tables` (`pytables` for other package managers): `pip3 install tables`.
+
+Pandas provides a high-level interface that simplifies storing Series and DataFrame objects. The `HDFStore` class works like a dictionary (for writing and reading) and handles the low-level details:
+```python
+# Create and instance of the HDF store to read the file mydata.h5
+store = pd.HDFStore("examples/mydata.h5")
+
+# Write
+store['obj'] = some_df
+store["obj_col"] = some_df["a"]
+
+store
+# <class 'pandas.io.pytables.HDFStore'>
+# File path: examples/mydata.h5
+
+# Read
+store['obj'] 				# or store.obj
+#            a
+# 0  -0.204708
+# 1   0.478943
+# 2  -0.519439
+# 3  -0.555730
+# 4   1.965781
+# ..       ...
+# 95  0.795253
+# 96  0.118110
+# 97 -0.748532
+# 98  0.584970
+# 99  0.152677
+# [100 rows x 1 columns]
+```
+
+HDFStore supports two storage schemas, "fixed" and "table" (the default is "fixed"). The former is a faster way to write and read a file, but it doesn't allow queries, while the later is slower but you can query the file:
+```python
+# put is an explicit version of store["obj2"] = frame, but it allows some options
+store.put("obj2", frame, format="table")
+
+store.select("obj2", where=["index >= 10 and index <= 15"])
+#            a
+# 10  1.007189
+# 11 -1.296221
+# 12  0.274992
+# 13  0.228913
+# 14  1.352917
+# 15  0.886429
+```
+
+> [!IMPORTANT]
+> Close the store with `store.close()` or use with and automatically close the store with:
+> ```python
+> with pd.HDFStore("store.h5") as store:
+> 	# do something
+> ```
+
+The `pandas.read_hdf` function gives you a shortcut to these tools:
+```python
+frame.to_hdf("examples/mydata.h5", "obj3", format="table")
+
+pd.read_hdf("examples/mydata.h5", "obj3", where=["index < 5"])
+#           a
+# 0 -0.204708
+# 1  0.478943
+# 2 -0.519439
+# 3 -0.555730
+# 4  1.965781
 ```
