@@ -44,7 +44,7 @@
 
 An open source library for manipulating data with python. I'll be referring to pandas as `pd`.
 
-Basic stuff here, check [full book](https://wesmckinney.com/book/) from pandas creator.
+Basic stuff here, check [full book](https://wesmckinney.com/book/) from pandas creator. I'll summarize chapters 5 and 6 (a part of ch 4 is in the `numpy.md` file).
 
 ## Data Structures
 
