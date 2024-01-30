@@ -37,6 +37,7 @@
 		- [Reading Microsoft Excel Files](#reading-microsoft-excel-files)
 		- [Using HDF5 Format](#using-hdf5-format)
 	- [Interacting with Web APIs](#interacting-with-web-apis)
+	- [Interacting with DBs](#interacting-with-dbs)
 
 
 # Pandas
@@ -1197,4 +1198,20 @@ data = resp.json()
 Now you have a python object, a dictionary, with the parsed data, so just pass that to pandas:
 ```python
 df = pd.DataFrame(data, columns=['col_1','col_2'])
+```
+
+## Interacting with DBs
+
+Pandas has some functions to simplify loading the results of a SQL query into a DataFrame ([the full steps](https://wesmckinney.com/book/accessing-data#io_databases) of how you'd have to do it are in the book). For this, we require a library called SQL Alchemy (a Python SQL toolkit), which you can install with: `pip3 install sqlalchemy`.
+
+Now you just need to connect to the DB with alchemy and read from it with pandas:
+```python
+import sqlalchemy as sqla
+db = sqla.create_engine("sqlite:///mydata.sqlite")
+
+pd.read_sql("SELECT * FROM test", db) # data from the example
+#              a           b     c  d
+# 0      Atlanta     Georgia  1.25  6
+# 1  Tallahassee     Florida  2.60  3
+# 2   Sacramento  California  1.70  5
 ```
