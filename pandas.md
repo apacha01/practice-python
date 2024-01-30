@@ -34,6 +34,7 @@
 				- [Parsing HTML](#parsing-html)
 				- [Parsing XML](#parsing-xml)
 		- [Binary Data Formats](#binary-data-formats)
+		- [Reading Microsoft Excel Files](#reading-microsoft-excel-files)
 
 
 # Pandas
@@ -1060,3 +1061,43 @@ You can read binary data with Python’s built-in `pickle` module, but pandas ob
 > `pickle` is recommended only as a short-term storage format. Since it is hard to guarantee the format will be stable over time; an object pickled today may not unpickle with a later version of a library.
 
 Pandas has built-in support for several other open source binary data formats, such as HDF5, ORC, and Apache Parquet (you'd need to install a package, like `pyarrow` for the `read_parquet`).
+
+### Reading Microsoft Excel Files
+
+Pandas also supports reading tabular data stored in Excel 2003 (and higher) files using either the `pandas.ExcelFile` class or `pandas.read_excel` function. This tools use some libraries internally that you need to install separately `pip install openpyxl xlrd`.
+
+For multiple sheets `ExcelFile` is faster than `read_excel`, but both work just passing the path to the file.
+
+To use `pandas.ExcelFile`, create an instance by passing a path to an xls or xlsx file:
+```python
+xlsx = pd.ExcelFile("examples/example.xlsx")
+
+# Check the sheets
+xlsx.sheet_names
+# ['Sheet1']
+
+# Read as DataFrame
+xlsx.parse(sheet_name='Sheet1')
+#    Unnamed: 0  a   b   c   d message
+# 0           0  1   2   3   4   hello
+# 1           1  5   6   7   8   world
+# 2           2  9  10  11  12     foo
+
+# Specify and Index
+xlsx.parse(sheet_name='Sheet1', index_col=0)
+#    a   b   c   d message
+# 0  1   2   3   4   hello
+# 1  5   6   7   8   world
+# 2  9  10  11  12     foo
+```
+
+To write data to Excel format, you can create an `ExcelWriter`, then write data to it using the pandas object's `to_excel` method. Or just pass a path to the `to_excel` file:
+```python
+# With writer
+writer = pd.ExcelWriter("examples/file_to_save.xlsx")
+frame.to_excel(writer, "Sheet1")
+writer.close()
+
+# Without writer
+frame.to_excel("examples/file_to_save.xlsx", sheet_name="Sheet1", index=False)
+```
