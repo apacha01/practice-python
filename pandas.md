@@ -36,6 +36,7 @@
 		- [Binary Data Formats](#binary-data-formats)
 		- [Reading Microsoft Excel Files](#reading-microsoft-excel-files)
 		- [Using HDF5 Format](#using-hdf5-format)
+	- [Interacting with Web APIs](#interacting-with-web-apis)
 
 
 # Pandas
@@ -1172,4 +1173,28 @@ pd.read_hdf("examples/mydata.h5", "obj3", where=["index < 5"])
 # 2 -0.519439
 # 3 -0.555730
 # 4  1.965781
+```
+
+## Interacting with Web APIs
+
+There are many modules to fetch data, book recommends `requests`:
+```python
+import requests
+
+requests.get('https://example.com')
+
+# check status
+resp.raise_for_status()
+resp
+# <Response [200]>
+
+# Get a dictionary of the parsed data
+data = resp.json()
+```
+> [!NOTE]
+> It's a good practice to always call raise_for_status after using requests.get to check for HTTP errors.
+
+Now you have a python object, a dictionary, with the parsed data, so just pass that to pandas:
+```python
+df = pd.DataFrame(data, columns=['col_1','col_2'])
 ```
