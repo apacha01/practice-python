@@ -1,6 +1,8 @@
 # Python study
 
-A study on the python language based on [this](https://roadmap.sh/python) roadmap.
+A study on the python language for Data Analysis. The basic study of python is based on [this roadmap](https://roadmap.sh/python) while the data analysis topics (numpy and pandas) are based on the ['Python for Data Analysis' book](https://wesmckinney.com/book/).
+
+I also included some practice files from [Google for Education python section](https://developers.google.com/edu/python), [hackerrank](https://www.hackerrank.com/) and just some random tests that i though of.
 
 ## Repository Structure
 
